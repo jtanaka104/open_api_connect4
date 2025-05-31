@@ -94,7 +94,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
             messages=[
                 {"role": "system", "content": prompt}
             ],
-            timeout=60  # タイムアウトを明示的に設定（秒）
+            timeout=180  # タイムアウトを明示的に設定（秒）
         )
         content = response.choices[0].message.content
         print("------------------------------------------------")
