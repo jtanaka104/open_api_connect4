@@ -126,6 +126,7 @@ if not st.session_state["gameover"]:
                 st.session_state["last_move"] = col_idx
             else:
                 st.session_state["message"] = "AIが不正な盤面を返しました。"
+                print("AIが不正な盤面を返しました。")
             st.rerun()
         elif submitted:
             st.session_state["message"] = "1から7の数字を入力してください。"
@@ -140,6 +141,7 @@ if not st.session_state["gameover"]:
             st.session_state["turn"] = "human"
         else:
             st.session_state["message"] = "AIが不正な盤面を返しました。"
+            print("AIが不正な盤面を返しました。")
         st.rerun()
 
 if st.session_state["message"]:
