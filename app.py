@@ -85,7 +85,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     ###############################################
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="o3",
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt}
         ]
@@ -125,7 +125,7 @@ if not st.session_state["gameover"]:
             st.session_state["message"] = "1から7の数字を入力してください。"
             st.rerun()
     elif st.session_state["turn"] == "ai":
-        st.text_input("", key="user_input", value="", disabled=True, label_visibility="collapsed")
+        st.text_input("ダミー", key="user_input", value="", disabled=True, label_visibility="collapsed")
         st.session_state["message"] = "AIの番です。考え中..."
         st.write(st.session_state["message"])
         new_board = ask_ai(st.session_state["board_str"], last_move=st.session_state["last_move"], player="ai")
