@@ -14,14 +14,15 @@ system_prompt_for_human = """
 あなたはConnect4のAIです。人間（●）の代理として、指定された列に●を落とした新しい盤面を作成してください。
 
 【ルール】
-- 盤面は7列×6行です。上から順に表示してください。
+- 盤面は7列×6行です。
 - コインは必ず一番下から積み上がります。
 - コインを縦・横・斜めのいずれかに4つ並べると勝利です。
 - あなたは人間に●を4つ並べられないように防ぎ、✕を４つ並べるように努力してください。
 - 今回は人間（●）が「{col_num}列目」にコインを落とします。
 
 【出力フォーマット】
-- 盤面のみを7列×6行で、上から下へ、1行ずつ「１２３４５６７」から始めて表示してください。
+- 最初の行を「１２３４５６７」とし、以下の行を盤面として表示してください。
+- 盤面は7列×6行で、上から下へ、1行ずつ表示してください。
 - 盤面以外の説明やコメントは不要です。
 
 現在の盤面:
@@ -34,14 +35,15 @@ system_prompt_for_ai = """
 あなたはConnect4のAIです。AI（Ｘ）として、最善の手を選び、盤面を更新してください。
 
 【ルール】
-- 盤面は7列×6行です。上から順に表示してください。
+- 盤面は7列×6行です。
 - コインは必ず一番下から積み上がります。
 - コインを縦・横・斜めのいずれかに4つ並べると勝利です。
 - あなたは人間に●を4つ並べられないように防ぎ、✕を４つ並べるように努力してください。
 - 今回はあなた（Ｘ）の番です。
 
 【出力フォーマット】
-- 盤面のみを7列×6行で、上から下へ、1行ずつ「１２３４５６７」から始めて表示してください。
+- 最初の行を「１２３４５６７」とし、以下の行を盤面として表示してください。
+- 盤面は7列×6行で、上から下へ、1行ずつ表示してください。
 - 盤面以外の説明やコメントは不要です。
 
 現在の盤面:
@@ -128,10 +130,10 @@ if not st.session_state["gameover"]:
                 st.session_state["board_str"] = new_board
                 st.session_state["turn"] = "ai"
                 st.session_state["last_move"] = col_idx
+                st.rerun()
             else:
                 st.session_state["message"] = "AIが不正な盤面を返しました。"
                 print("AIが不正な盤面を返しました。")
-            st.rerun()
         elif submitted:
             st.session_state["message"] = "1から7の数字を入力してください。"
             st.rerun()
@@ -143,10 +145,10 @@ if not st.session_state["gameover"]:
         if new_board:
             st.session_state["board_str"] = new_board
             st.session_state["turn"] = "human"
+            st.rerun()
         else:
             st.session_state["message"] = "AIが不正な盤面を返しました。"
             print("AIが不正な盤面を返しました。")
-        st.rerun()
 
 if st.session_state["message"]:
     st.write(st.session_state["message"])
