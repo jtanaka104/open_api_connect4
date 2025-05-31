@@ -69,14 +69,17 @@ def ask_ai(board_str, last_move=None, player="ai"):
     else:
         prompt = system_prompt_for_ai.format(b_str=board_str)
     
+    ###############################################
     # gpt-3.5-turbo input: $0.50 output: $1.50
     # gpt-4o-mini   input: $0.15 output: $0.60
     # o1            input:$15.00 output:$60.00
     # o3            input:$10.00 output:$40.00
+    ###############################################
     # gpt-3.5-turbo < gpt-4o-mini < o1 < o3
+    ###############################################
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt}
         ]
