@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+import time
 
 ###############################################################################
 # Streamlitの「Secrets」からOpenAI API keyを取得
@@ -84,15 +85,20 @@ def ask_ai(board_str, last_move=None, player="ai"):
     # gpt-3.5-turbo < gpt-4o-mini < o1 < o3
     ###############################################
     client = OpenAI(api_key=API_KEY)
-    response = client.chat.completions.create(
-        model="o3",
-        messages=[
-            {"role": "system", "content": prompt}
-        ]
-    )
+    try:
+        response = client.chat.completions.create(
+            model="o3",  # ←ここをo3に
+            messages=[
+                {"role": "system", "content": prompt}
+            ],
+            timeout=60  # タイムアウトを明示的に設定（秒）
+        )
+        content = response.choices[0].message.content
+    except Exception as e:
+        print(f"APIエラー: {e}")
+        return None
+
     import re
-    content = response.choices[0].message.content
-    print(content)
     match = re.search(r"１２３４５６７\n([□Ｘ×●\n]{42,})", content)
     if match:
         board_str = "１２３４５６７\n" + match.group(1).strip()
