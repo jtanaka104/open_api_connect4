@@ -24,7 +24,7 @@ system_prompt_for_human = """
 現在の盤面:
 {b_str}
 
-あなたの番です。新しい盤面を出力してください。
+人間が落としたコインを反映した新しい盤面を出力してください。
 """
 
 system_prompt_for_ai = """
@@ -42,7 +42,7 @@ system_prompt_for_ai = """
 現在の盤面:
 {b_str}
 
-あなたの番です。新しい盤面を出力してください。
+あなたが落としたコインを反映した新しい盤面を出力してください。
 """
 
 ###############################################################################
@@ -80,7 +80,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     ###############################################
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="o3",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": prompt}
         ]
