@@ -73,7 +73,8 @@ def ask_ai(board_str, last_move=None, player="ai"):
         prompt = system_prompt_for_human.format(b_str=board_str, col_num=last_move+1)
     else:
         prompt = system_prompt_for_ai.format(b_str=board_str)
-
+    print("------------------------------------------------")
+    print("AIへのプロンプト:")
     print(prompt)
     ###############################################
     # 1Mトークンあたりの価格（2025年6月時点）
@@ -94,6 +95,9 @@ def ask_ai(board_str, last_move=None, player="ai"):
             timeout=60  # タイムアウトを明示的に設定（秒）
         )
         content = response.choices[0].message.content
+        print("------------------------------------------------")
+        print("AIからの応答:")
+        print(content)
     except Exception as e:
         print(f"APIエラー: {e}")
         return None
