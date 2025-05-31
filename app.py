@@ -1,36 +1,32 @@
 import streamlit as st
 from openai import OpenAI
-
+###############################################################################
+# Streamlitの「Secrets」からOpenAI API keyを取得
+###############################################################################
 API_KEY = st.secrets.OpenAIAPI.openai_api_key
-
-def init_board_str():
-    return "１２３４５６７\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□"
-
-def board_to_html(board_str):
-    html = board_str.replace("\n", "<br/>")
-    return html
-
-def ask_ai(board_str, last_move=None, player="ai"):
-    if player == "human":
-        prompt = f"""
+###############################################################################
+# システムプロンプトの定義
+###############################################################################
+b_str = st.session_state["board_str"]
+system_prompt_for_human = """
 あなたはConnect4のAIです。人間（●）の代理として、指定された列に●を落とした新しい盤面を作成してください。
 
 【ルール】
 - 盤面は7列×6行です。上から順に表示してください。
 - コインは必ず一番下から積み上がります。
-- 今回は人間（●）が「{last_move+1}列目」にコインを落とします。
+- 今回は人間（●）が「{col_num}列目」にコインを落とします。
 
 【出力フォーマット】
 - 盤面のみを7列×6行で、上から下へ、1行ずつ「１２３４５６７」から始めて表示してください。
 - 盤面以外の説明やコメントは不要です。
 
 現在の盤面:
-{board_str}
+{b_str}
 
 あなたの番です。新しい盤面を出力してください。
 """
-    else:
-        prompt = f"""
+
+system_prompt_for_ai = """
 あなたはConnect4のAIです。AI（×）として、最善の手を選び、盤面を更新してください。
 
 【ルール】
@@ -43,13 +39,22 @@ def ask_ai(board_str, last_move=None, player="ai"):
 - 盤面以外の説明やコメントは不要です。
 
 現在の盤面:
-{board_str}
+{b_str}
 
 あなたの番です。新しい盤面を出力してください。
 """
+
+def ask_ai(board_str, last_move=None, player="ai"):
+    if player == "human":
+        if last_move is None:
+            return None
+        prompt = system_prompt_for_human.format(b_str=board_str, col_num=last_move+1)
+    else:
+        prompt = system_prompt_for_ai.format(b_str=board_str)
+    
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="o1",
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt}
         ]
@@ -63,7 +68,12 @@ def ask_ai(board_str, last_move=None, player="ai"):
     else:
         return None
 
+###############################################################################
 # セッション初期化
+###############################################################################
+def init_board_str():
+    return "１２３４５６７\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□"
+
 if "board_str" not in st.session_state:
     st.session_state["board_str"] = init_board_str()
     st.session_state["turn"] = "human"
@@ -71,18 +81,20 @@ if "board_str" not in st.session_state:
     st.session_state["gameover"] = False
     st.session_state["last_move"] = None
 
+###############################################################################
+# ユーザーインターフェイスの構築
+###############################################################################
 st.title("Connect4（盤面生成版）")
-st.write(board_to_html(st.session_state["board_str"]), unsafe_allow_html=True)
+st.write(st.session_state["board_str"].replace("\n", "<br/>"), unsafe_allow_html=True)
 
 if not st.session_state["gameover"]:
     if st.session_state["turn"] == "human":
-        st.session_state["message"] = ""  # ← ここを追加
+        st.session_state["message"] = ""
         with st.form(key="user_form", clear_on_submit=True):
             col = st.text_input("あなたの番です。1-7の数字を入力してください。", key="user_input")
             submitted = st.form_submit_button("決定")
-        if submitted and col and col in "1234567":
+        if submitted and col and col.isdigit() and 1 <= int(col) <= 7:
             col_idx = int(col) - 1
-            # AIに新しい盤面を作らせる
             new_board = ask_ai(st.session_state["board_str"], last_move=col_idx, player="human")
             if new_board:
                 st.session_state["board_str"] = new_board
@@ -91,11 +103,13 @@ if not st.session_state["gameover"]:
             else:
                 st.session_state["message"] = "AIが不正な盤面を返しました。"
             st.rerun()
+        elif submitted:
+            st.session_state["message"] = "1から7の数字を入力してください。"
+            st.rerun()
     elif st.session_state["turn"] == "ai":
         st.text_input("", key="user_input", value="", disabled=True, label_visibility="collapsed")
         st.session_state["message"] = "AIの番です。考え中..."
         st.write(st.session_state["message"])
-        # AIに新しい盤面を作らせる
         new_board = ask_ai(st.session_state["board_str"], last_move=st.session_state["last_move"], player="ai")
         if new_board:
             st.session_state["board_str"] = new_board
