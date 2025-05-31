@@ -1,13 +1,14 @@
 import streamlit as st
 from openai import OpenAI
+
 ###############################################################################
 # Streamlitの「Secrets」からOpenAI API keyを取得
 ###############################################################################
 API_KEY = st.secrets.OpenAIAPI.openai_api_key
+
 ###############################################################################
-# システムプロンプトの定義
+# システムプロンプトの定義（formatはask_ai内で行う）
 ###############################################################################
-b_str = st.session_state["board_str"]
 system_prompt_for_human = """
 あなたはConnect4のAIです。人間（●）の代理として、指定された列に●を落とした新しい盤面を作成してください。
 
@@ -44,6 +45,22 @@ system_prompt_for_ai = """
 あなたの番です。新しい盤面を出力してください。
 """
 
+###############################################################################
+# セッション初期化
+###############################################################################
+def init_board_str():
+    return "１２３４５６７\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□"
+
+if "board_str" not in st.session_state:
+    st.session_state["board_str"] = init_board_str()
+    st.session_state["turn"] = "human"
+    st.session_state["message"] = ""
+    st.session_state["gameover"] = False
+    st.session_state["last_move"] = None
+
+###############################################################################
+# AIへの問い合わせ
+###############################################################################
 def ask_ai(board_str, last_move=None, player="ai"):
     if player == "human":
         if last_move is None:
@@ -67,19 +84,6 @@ def ask_ai(board_str, last_move=None, player="ai"):
         return board_str
     else:
         return None
-
-###############################################################################
-# セッション初期化
-###############################################################################
-def init_board_str():
-    return "１２３４５６７\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□\n□□□□□□□"
-
-if "board_str" not in st.session_state:
-    st.session_state["board_str"] = init_board_str()
-    st.session_state["turn"] = "human"
-    st.session_state["message"] = ""
-    st.session_state["gameover"] = False
-    st.session_state["last_move"] = None
 
 ###############################################################################
 # ユーザーインターフェイスの構築
