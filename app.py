@@ -105,7 +105,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
         return None
 
     import re
-    match = re.search(r"１２３４５６７\n([□Ｘ×●\n]{42,})", content)
+    match = re.search(r"１２３４５６７\n([□Ｘ×✕●\n]{42,})", content)
     if match:
         board_str = "１２３４５６７\n" + match.group(1).strip()
         return board_str
@@ -115,7 +115,13 @@ def ask_ai(board_str, last_move=None, player="ai"):
 # ユーザーインターフェイスの構築
 ###############################################################################
 st.title("Connect4（盤面生成版）")
-st.write(st.session_state["board_str"].replace("×", "Ｘ").replace("\n", "<br/>"), unsafe_allow_html=True)
+st.write(
+    st.session_state["board_str"]
+    .replace("×", "Ｘ")
+    .replace("✕", "Ｘ")
+    .replace("\n", "<br/>"),
+    unsafe_allow_html=True
+)
 
 if not st.session_state["gameover"]:
     if st.session_state["turn"] == "human":
