@@ -85,10 +85,9 @@ def ask_ai(board_str, last_move=None, player="ai"):
             {"role": "system", "content": prompt}
         ]
     )
-    print('OpenAI')
-    print(response)
     import re
     content = response.choices[0].message.content
+    print(content)
     match = re.search(r"１２３４５６７\n([□×●\n]{42,})", content)
     if match:
         board_str = "１２３４５６７\n" + match.group(1).strip()
