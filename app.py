@@ -68,7 +68,8 @@ def ask_ai(board_str, last_move=None, player="ai"):
         prompt = system_prompt_for_human.format(b_str=board_str, col_num=last_move+1)
     else:
         prompt = system_prompt_for_ai.format(b_str=board_str)
-    
+
+    print(prompt)
     ###############################################
     # gpt-3.5-turbo input: $0.50 output: $1.50
     # gpt-4o-mini   input: $0.15 output: $0.60
