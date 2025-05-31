@@ -81,6 +81,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
             {"role": "system", "content": prompt}
         ]
     )
+    print(response)
     import re
     content = response.choices[0].message.content
     match = re.search(r"１２３４５６７\n([□×●\n]{42,})", content)
