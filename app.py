@@ -84,6 +84,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
             {"role": "system", "content": prompt}
         ]
     )
+    print('OpenAI')
     print(response)
     import re
     content = response.choices[0].message.content
