@@ -94,16 +94,11 @@ def ask_ai(board_str, last_move=None, player="ai"):
         return board_str
     else:
         return None
-
-def display_board(board_str):
-    # どちらも全角Ｘに統一
-    return board_str.replace("×", "Ｘ").replace("\n", "<br/>")
-
 ###############################################################################
 # ユーザーインターフェイスの構築
 ###############################################################################
 st.title("Connect4（盤面生成版）")
-st.write(display_board(st.session_state["board_str"]), unsafe_allow_html=True)
+st.write(st.session_state["board_str"].replace("×", "Ｘ").replace("\n", "<br/>"), unsafe_allow_html=True)
 
 if not st.session_state["gameover"]:
     if st.session_state["turn"] == "human":
