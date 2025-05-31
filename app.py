@@ -28,12 +28,12 @@ system_prompt_for_human = """
 """
 
 system_prompt_for_ai = """
-あなたはConnect4のAIです。AI（×）として、最善の手を選び、盤面を更新してください。
+あなたはConnect4のAIです。AI（Ｘ）として、最善の手を選び、盤面を更新してください。
 
 【ルール】
 - 盤面は7列×6行です。上から順に表示してください。
 - コインは必ず一番下から積み上がります。
-- 今回はあなた（×）の番です。
+- 今回はあなた（Ｘ）の番です。
 
 【出力フォーマット】
 - 盤面のみを7列×6行で、上から下へ、1行ずつ「１２３４５６７」から始めて表示してください。
@@ -88,18 +88,22 @@ def ask_ai(board_str, last_move=None, player="ai"):
     import re
     content = response.choices[0].message.content
     print(content)
-    match = re.search(r"１２３４５６７\n([□×●\n]{42,})", content)
+    match = re.search(r"１２３４５６７\n([□Ｘ×●\n]{42,})", content)
     if match:
         board_str = "１２３４５６７\n" + match.group(1).strip()
         return board_str
     else:
         return None
 
+def display_board(board_str):
+    # どちらも全角Ｘに統一
+    return board_str.replace("×", "Ｘ").replace("\n", "<br/>")
+
 ###############################################################################
 # ユーザーインターフェイスの構築
 ###############################################################################
 st.title("Connect4（盤面生成版）")
-st.write(st.session_state["board_str"].replace("\n", "<br/>"), unsafe_allow_html=True)
+st.write(display_board(st.session_state["board_str"]), unsafe_allow_html=True)
 
 if not st.session_state["gameover"]:
     if st.session_state["turn"] == "human":
