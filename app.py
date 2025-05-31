@@ -80,7 +80,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     ###############################################
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="o1",
         messages=[
             {"role": "system", "content": prompt}
         ]
