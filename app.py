@@ -90,7 +90,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     client = OpenAI(api_key=API_KEY)
     try:
         response = client.chat.completions.create(
-            model="o3",  # ←ここをo3に
+            model="gpt-3.5-turbo",  # ←ここをo3に
             messages=[
                 {"role": "system", "content": prompt}
             ],
