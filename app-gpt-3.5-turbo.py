@@ -90,7 +90,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     client = OpenAI(api_key=API_KEY)
     try:
         response = client.chat.completions.create(
-            model="o3-pro",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": prompt}
             ],
@@ -114,7 +114,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
 ###############################################################################
 # ユーザーインターフェイスの構築
 ###############################################################################
-st.title("Connect4（o3-pro）")
+st.title("Connect4（gpt-3.5-turbo）")
 st.write(
     st.session_state["board_str"]
     .replace("×", "Ｘ")
