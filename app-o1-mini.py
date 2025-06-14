@@ -90,7 +90,7 @@ def ask_ai(board_str, last_move=None, player="ai"):
     client = OpenAI(api_key=API_KEY)
     try:
         response = client.chat.completions.create(
-            model="o3-pro",
+            model="o1-mini",
             messages=[
                 {"role": "system", "content": prompt}
             ],
